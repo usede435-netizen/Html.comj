@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>متجر الإبداع - أجهزة تتبع GPS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #071e4d;
+    --deep-blue: #0b2f78;
+    --royal: #1652c9;
+    --bright: #2f7cf6;
+    --sky: #6fb6ff;
+    --ice: #eaf3ff;
+    --white: #ffffff;
+    --gold: #ffd86b;
+    --alert: #ff6b6b;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Tajawal', sans-serif;
+    background: radial-gradient(circle at 30% 0%, var(--royal) 0%, var(--deep-blue) 45%, var(--navy) 100%);
+    display:flex;
+    justify-content:center;
+    padding:28px 12px;
+    min-height:100vh;
+  }
+  .poster{
+    width:100%;
+    max-width:520px;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--deep-blue) 38%, var(--royal) 78%, var(--bright) 100%);
+    border-radius:28px;
+    overflow:hidden;
+    position:relative;
+    box-shadow: 0 40px 80px rgba(4,15,45,0.55), 0 0 0 1px rgba(255,255,255,0.06);
+    isolation:isolate;
+  }
+
+  /* ambient grid + glow */
+  .poster::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.055) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: radial-gradient(circle at 50% 20%, black, transparent 75%);
+    z-index:0;
+  }
+  .glow{
+    position:absolute; width:420px; height:420px; border-radius:50%;
+    background: radial-gradient(circle, rgba(111,182,255,0.55), transparent 70%);
+    top:-140px; left:50%; transform:translateX(-50%);
+    filter: blur(10px);
+    z-index:0;
+  }
+
+  .content{ position:relative; z-index:2; padding: 30px 26px 34px; }
+
+  /* header */
+  .brand{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-bottom:22px;
+  }
+  .brand-mark{
+    width:38px; height:38px; border-radius:11px;
+    background: linear-gradient(145deg, var(--gold), #ffb347);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; color:var(--navy); font-family:'Cairo',sans-serif; font-size:18px;
+    box-shadow: 0 6px 16px rgba(255,184,71,0.4);
+  }
+  .brand-name{
+    font-family:'Cairo', sans-serif;
+    font-weight:800; font-size:20px; color:var(--white);
+    letter-spacing:0.5px;
+  }
+
+  .eyebrow{
+    text-align:center;
+    color: var(--sky);
+    font-size:13px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Cairo', sans-serif;
+    font-weight:900;
+    text-align:center;
+    color:var(--white);
+    font-size:34px;
+    line-height:1.25;
+    margin-bottom:6px;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  h1 span{ color: var(--gold); }
+  .subhead{
+    text-align:center;
+    color: rgba(234,243,255,0.85);
+    font-size:15px;
+    max-width:360px;
+    margin:0 auto 26px;
+    line-height:1.7;
+  }
+
+  /* 3D device signature */
+  .device-stage{
+    position:relative;
+    height:230px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:26px;
+    perspective: 900px;
+  }
+  .pedestal{
+    position:absolute;
+    bottom:6px;
+    width:170px; height:34px;
+    border-radius:50%;
+    background: radial-gradient(closest-side, rgba(47,124,246,0.55), transparent 75%);
+    filter: blur(6px);
+    z-index:1;
+  }
+  .ring{
+    position:absolute;
+    border:1.5px solid rgba(111,182,255,0.5);
+    border-radius:50%;
+    animation: pulse 2.6s ease-out infinite;
+  }
+  .ring.r1{ width:120px; height:120px; }
+  .ring.r2{ width:120px; height:120px; animation-delay:0.9s; }
+  .ring.r3{ width:120px; height:120px; animation-delay:1.8s; }
+  @keyframes pulse{
+    0%{ width:120px; height:120px; opacity:0.9; border-color: rgba(255,216,107,0.85); }
+    100%{ width:280px; height:280px; opacity:0; border-color: rgba(111,182,255,0.05); }
+  }
+  .device-photo{
+    position:relative;
+    height:230px;
+    z-index:2;
+    filter: drop-shadow(0 24px 26px rgba(3,15,45,0.55));
+    transform: rotateY(-4deg);
+  }
+  .satellite{
+    position:absolute; z-index:1;
+    color: var(--gold);
+    opacity:0.9;
+  }
+  .sat1{ top:6px; right:22%; width:26px; height:26px; }
+  .sat2{ bottom:14px; left:20%; width:20px; height:20px; opacity:0.7; }
+
+  /* section label */
+  .section-label{
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px;
+  }
+  .section-label::before, .section-label::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background: rgba(255,255,255,0.18);
+  }
+  .section-label span{
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color: var(--sky);
+    letter-spacing:1px;
+    white-space:nowrap;
+  }
+
+  /* features */
+  .features{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:12px;
+    margin-bottom:22px;
+  }
+  .feature{
+    background: rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.16);
+    border-radius:16px;
+    padding:16px 14px;
+    backdrop-filter: blur(6px);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .feature.wide{ grid-column: 1 / -1; flex-direction:row; align-items:center; gap:14px; }
+  .f-icon{
+    width:38px; height:38px; border-radius:11px;
+    background: linear-gradient(145deg, var(--bright), var(--royal));
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    box-shadow: 0 6px 14px rgba(47,124,246,0.4);
+  }
+  .f-icon svg{ width:20px; height:20px; stroke:var(--white); }
+  .f-title{
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    color:var(--white);
+    font-size:14.5px;
+  }
+  .f-desc{
+    color: rgba(234,243,255,0.7);
+    font-size:12.5px;
+    line-height:1.5;
+  }
+
+  /* alert-style feature (new smart alerts block) */
+  .alerts{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .alert-item{
+    display:flex; align-items:center; gap:14px;
+    background: linear-gradient(90deg, rgba(255,107,107,0.12), rgba(255,255,255,0.05));
+    border:1px solid rgba(255,107,107,0.3);
+    border-radius:16px;
+    padding:13px 16px;
+  }
+  .a-icon{
+    width:36px; height:36px; border-radius:10px;
+    background: linear-gradient(145deg, var(--alert), #e94057);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    box-shadow: 0 6px 14px rgba(255,107,107,0.4);
+  }
+  .a-icon svg{ width:19px; height:19px; stroke:var(--white); }
+  .a-text{ display:flex; flex-direction:column; gap:2px; }
+  .a-title{
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    color:var(--white);
+    font-size:14px;
+  }
+  .a-desc{
+    color: rgba(234,243,255,0.7);
+    font-size:12px;
+    line-height:1.4;
+  }
+
+  /* warranty badge */
+  .warranty{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    background: linear-gradient(90deg, rgba(255,216,107,0.15), rgba(255,216,107,0.05));
+    border:1px solid rgba(255,216,107,0.4);
+    border-radius:14px;
+    padding:12px 16px;
+    margin-bottom:24px;
+  }
+  .warranty svg{ width:22px; height:22px; stroke:var(--gold); flex-shrink:0; }
+  .warranty-text{ font-family:'Cairo',sans-serif; font-weight:700; color:var(--gold); font-size:15px; }
+
+  /* CTA */
+  .cta{
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    background: linear-gradient(135deg, #25d366, #1fb959);
+    border-radius:16px;
+    padding:16px 18px;
+    box-shadow: 0 16px 30px rgba(37,211,102,0.35);
+    text-decoration:none;
+  }
+  .cta svg{ width:26px; height:26px; fill:var(--white); flex-shrink:0; }
+  .cta-text{ text-align:center; color:var(--white); }
+  .cta-label{ font-size:12px; opacity:0.9; }
+  .cta-number{ font-family:'Cairo',sans-serif; font-weight:800; font-size:19px; letter-spacing:1px; direction:ltr; }
+
+  .footer-note{
+    text-align:center;
+    color: rgba(234,243,255,0.55);
+    font-size:11.5px;
+    margin-top:16px;
+    letter-spacing:0.5px;
+  }
+</style>
+</head>
+<body>
+  <div class="poster">
+    <div class="glow"></div>
+    <div class="content">
+
+      <div class="brand">
+        <div class="brand-mark">إ</div>
+        <div class="brand-name">متجر الإبداع</div>
+      </div>
+
+      <div class="eyebrow">تتبع ذكي · حماية دائمة</div>
+      <h1>جهاز تتبع <span>GPS</span><br>لسيارتك أينما كانت</h1>
+      <p class="subhead">تركيب مخفي، تتبع مباشر على الخريطة، وسجل كامل لكل رحلة — راقب سيارتك بثقة تامة في أي لحظة.</p>
+
+      <div class="device-stage">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <svg class="satellite sat1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7 9 3 5 7l4 4"/><path d="M17 11l4 4-4 4-4-4"/><path d="M8 12l4 4L21 7"/><path d="m5 15 4 4"/></svg>
+        <svg class="satellite sat2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        <div class="pedestal"></div>
+        <img class="device-photo" src="data:image/jpeg;base64,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" alt="S20جهاز تتبع GPS">
+      </div>
+
+      <div class="section-label"><span>مميزات التتبع</span></div>
+      <div class="features">
+        <div class="feature">
+          <div class="f-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-5.5-2V4L9 6m0 14l6-2m-6 2V6m6 12l5.5 2V6L15 4m0 14V4m0 0L9 6"/></svg>
+          </div>
+          <div class="f-title">رسم الخرائط والتتبع</div>
+          <div class="f-desc">تحديد الموقع بدقة على خريطة تفاعلية سهلة الاستخدام</div>
+        </div>
+
+        <div class="feature">
+          <div class="f-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="f-title">تركيب مخفي تماماً</div>
+          <div class="f-desc">غير قابل للاكتشاف داخل السيارة بأي شكل من الأشكال</div>
+        </div>
+
+        <div class="feature">
+          <div class="f-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          </div>
+          <div class="f-title">حفظ المسارات السابقة</div>
+          <div class="f-desc">سجل كامل لكل الرحلات يمكن مراجعته خلال 7 أيام</div>
+        </div>
+
+        <div class="feature">
+          <div class="f-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="f-title">تتبع مباشر</div>
+          <div class="f-desc">بث حي للموقع لحظة بلحظة دون أي تأخير</div>
+        </div>
+
+        <div class="feature wide">
+          <div class="f-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3Z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div>
+            <div class="f-title">جودة وثقة</div>
+            <div class="f-desc">أجهزة أصلية مضمونة الأداء لسنوات طويلة من الاستخدام</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label"><span>تنبيهات ذكية فورية</span></div>
+      <div class="alerts">
+        <div class="alert-item">
+          <div class="a-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg>
+          </div>
+          <div class="a-text">
+            <div class="a-title">تنبيه تشغيل وإطفاء المحرك</div>
+            <div class="a-desc">إشعار فوري لحظة تشغيل السيارة أو إيقافها</div>
+          </div>
+        </div>
+
+        <div class="alert-item">
+          <div class="a-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/><path d="M7 3.5 5 6"/><path d="m17 3.5 2 2.5"/></svg>
+          </div>
+          <div class="a-text">
+            <div class="a-title">تنبيه تجاوز السرعة المحددة</div>
+            <div class="a-desc">تحذير مباشر عند تجاوز السرعة القصوى التي تحددها</div>
+          </div>
+        </div>
+
+        <div class="alert-item">
+          <div class="a-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11Z"/>
